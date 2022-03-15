@@ -1,0 +1,14 @@
+{
+  "name": "default",
+  "type": "postgres",
+  "host": "localhost",
+  "port": 3309,
+  "username": "postgres",
+  "password": "tpv3gws2wnmOAltu",
+  "database": "file-feed-db",
+  "synchronize": true,
+  "entities": [
+    "src/database/entities/**/*.ts"
+  ],
+  "logging": false
+}
