@@ -11,7 +11,7 @@ export class FileController {
         this.routes();
     }
 
-    private upload = async (req, res: Response, next) => {
+    private upload = async (req, res: Response) => {
         try {
             const user = await req.user
             const fileForUploadFile = req.file
@@ -21,12 +21,40 @@ export class FileController {
                 data: imageUrl
             })
         } catch (error) {
-            next(error)
+            res.send(error).json()
+        }
+    }
+
+    private allFiles = async (req, res: Response) => {
+        const filesIDArray = await this.fileService.allFilesID();
+        res.status(200).json({allFilesID: filesIDArray});
+    }
+
+
+    private getFileByID = async (req, res: Response) => {
+        const id = req['params']['id'];
+        const file = await this.fileService.getFileByID(id)
+        res.status(200).json({fileEntity: file})
+    }
+
+    private myFiles = async (req, res: Response) => {
+        try {
+            const user = await req.user
+            let myFilesIDArray: number[] = []
+            if (user?.id) {
+                myFilesIDArray = await this.fileService.myFiles(user.id)
+            }
+            res.status(200).json({myFilesIDArray: myFilesIDArray});
+        } catch (error) {
+            res.send(error).json()
         }
     }
 
     public routes() {
         this.router.post('/upload', this.upload);
+        this.router.get("/all", this.allFiles);
+        this.router.get("/my", this.myFiles)
+        this.router.get("/:id", this.getFileByID);
     }
 
 }

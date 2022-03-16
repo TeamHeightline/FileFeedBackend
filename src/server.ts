@@ -1,5 +1,4 @@
 import express from 'express';
-import {PostController} from './api/post.controller'; // import the post api
 import {createConnection} from "typeorm";
 import {UserController} from "./api/user.controller";
 import {sessionSecret} from "./auth-const";
@@ -13,9 +12,9 @@ const passport = require('passport');
 const multer = require('multer')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
 export class Server {
-    private postController: PostController;
     private userController: UserController;
     private fileController: FileController;
     private app: express.Application;
@@ -32,16 +31,20 @@ export class Server {
 
         this.app.set('port', process.env.PORT || 3001);
         this.app.use(express.json());
+        this.app.use(cors({
+            credentials: true,
+            origin: "http://localhost:3000"
+        }))
         /**
          * Подключение авторизации
          */
+
 
         initializePassport(
             passport,
             this.userController.userService.getUserByEmail,
             this.userController.userService.getUserByID
         )
-
 
         this.app.use(cookieParser());
         this.app.use(bodyParser.json());
@@ -79,7 +82,6 @@ export class Server {
     public async activateControllers() {
         await createConnection();
         this.userController = new UserController();
-        this.postController = new PostController();
         this.fileController = new FileController();
     }
 
@@ -91,8 +93,8 @@ export class Server {
         //Добавление роутера пользователей прямо в коренной роут
         this.app.use('', this.userController.router);
 
+        //Роуты для отдельных entity
         this.app.use('/file/', this.fileController.router)
-        this.app.use(`/api/posts/`, this.postController.router);
     }
 
     /**

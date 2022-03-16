@@ -1,11 +1,10 @@
 {
   "name": "default",
   "type": "postgres",
-  "host": "localhost",
-  "port": 3309,
-  "username": "postgres",
-  "password": "tpv3gws2wnmOAltu",
-  "database": "file-feed-db",
+  "url": "postgres://zehxqychxahgno:424ffd4db8ade8947422f653c6998332c5e9cf44a83cb06a833580a78cf1845d@ec2-54-226-18-238.compute-1.amazonaws.com:5432/dc2rn01nmi83pe",
+  "ssl": {
+    "rejectUnauthorized": false
+  },
   "synchronize": true,
   "entities": [
     "src/database/entities/**/*.ts"

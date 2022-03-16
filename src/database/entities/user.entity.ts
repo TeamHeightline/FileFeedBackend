@@ -20,3 +20,6 @@ export class UserEntity {
     @OneToMany(() => FileEntity, file => file.user)
     files: FileEntity[];
 }
+
+export type UserWithOptionalPassword = PartialBy<UserEntity, "password">
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
