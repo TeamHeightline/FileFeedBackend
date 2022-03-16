@@ -50,11 +50,27 @@ export class FileController {
         }
     }
 
+    private deleteFileByID = async (req, res: Response) => {
+        try {
+            const fileID = req['params']['id']
+            const user = await req.user
+            const {message} = await this.fileService.deleteFileByID(fileID, user.id)
+            if (message === "Success deleted") {
+                res.status(200).json(message)
+            } else {
+                res.status(500).json(message)
+            }
+        } catch (e) {
+            res.send(e).json()
+        }
+    }
+
     public routes() {
         this.router.post('/upload', this.upload);
         this.router.get("/all", this.allFiles);
-        this.router.get("/my", this.myFiles)
+        this.router.get("/my", this.myFiles);
         this.router.get("/:id", this.getFileByID);
+        this.router.post("/delete/:id", this.deleteFileByID);
     }
 
 }

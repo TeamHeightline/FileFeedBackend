@@ -54,7 +54,6 @@ export class FileService {
 
 
     public myFiles = async (userID: string) => {
-
         const myFiles = await this.fileRepository.find({
             where: {
                 user: {
@@ -63,6 +62,16 @@ export class FileService {
             }
         })
         return myFiles.map((file: FileEntity) => file.id)
+    }
+
+    public deleteFileByID = async (fileID: string, userID) => {
+        const file = await this.fileRepository.findOneOrFail(fileID, {relations: ['user']})
+        if (String(file.user.id) === String(userID)) {
+            await this.fileRepository.remove(file)
+            return ({message: "Success deleted"})
+        } else {
+            return ({message: "Error deleting"})
+        }
     }
 
 }
